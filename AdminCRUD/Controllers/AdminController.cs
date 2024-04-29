@@ -72,5 +72,24 @@ namespace AdminCRUD.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("LoginUser")]
+        public async Task <IActionResult> LoginUser([FromForm] LoginUser user)
+        {
+            try
+            {
+                var login = await _context.users.FirstOrDefaultAsync(e => e.Username == user.UserName && e.Password == user.Password);
+                if (login != null) 
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

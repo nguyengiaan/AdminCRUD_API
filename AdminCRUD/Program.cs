@@ -1,5 +1,6 @@
 ﻿using AdminCRUD.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddCors(options =>
             .AllowCredentials(); // Cho phép gửi cookie và thông tin xác thực
     });
 });
+
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MyDbContext>(option =>
@@ -25,7 +27,14 @@ builder.Services.AddDbContext<MyDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"));
 });
 var app = builder.Build();
-
+app.UseStaticFiles(
+    new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "Uploads")),
+        RequestPath = "/Resources"
+    }
+    );
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

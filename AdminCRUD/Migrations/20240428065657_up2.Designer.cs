@@ -3,6 +3,7 @@ using AdminCRUD.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminCRUD.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240428065657_up2")]
+    partial class up2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,27 +23,30 @@ namespace AdminCRUD.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("AdminCRUD.Model.Tintuc", b =>
+            modelBuilder.Entity("AdminCRUD.Model.News", b =>
                 {
-                    b.Property<int>("Id_News")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Id")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_News"), 1L, 1);
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Id_News")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_News"), 1L, 1);
+
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id_News");
+                    b.HasKey("Id");
 
-                    b.ToTable("Tintuc", (string)null);
+                    b.ToTable("News", (string)null);
                 });
 
             modelBuilder.Entity("AdminCRUD.Model.Users", b =>
@@ -70,6 +75,22 @@ namespace AdminCRUD.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("AdminCRUD.Model.News", b =>
+                {
+                    b.HasOne("AdminCRUD.Model.Users", "User")
+                        .WithMany("News")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AdminCRUD.Model.Users", b =>
+                {
+                    b.Navigation("News");
                 });
 #pragma warning restore 612, 618
         }
